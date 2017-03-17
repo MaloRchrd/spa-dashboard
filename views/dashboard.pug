@@ -1,0 +1,63 @@
+extends layout.pug
+
+
+block nav
+  nav.navbar.navbar-default
+    .container-fluid
+      .navbar-header
+        a.navbar-brand(href='/')
+          p S.P.A 🐱 🐶 🐰 🐦
+      a.btn.btn-danger.navbar-right.navbar-btn(href='/addanimal') Faire un Signalement
+
+block main
+  .container(id='animals')
+    .row-fluid(align='center')
+      h1 SPA Dashboard
+      .col-md-6.col-md-offset-3.form-inline
+        p Chercher un statut, un type d'animal, une brigade...
+          br
+          input.search.form-control(placeholder='Ex : Sauvé , chien')
+          br
+          button.sort.btn.btn-info(data-sort='statuts') Sort by statuts
+          button.sort.btn.btn-danger(data-sort='date') Sort by date
+      table.table.table-striped.table-hover.table-bordered
+        thead
+          tr
+            th Statuts
+            th Date
+            th Creneau
+            th Alerteur
+            th Animal
+            th Couleur
+            th Adresse
+            th Etat
+            th Collier
+            th Brigade
+            th Edit/ajouter une brigade
+            th Resultat intervention
+        tbody.list
+          each animal in animaux
+            tr
+              th.statuts #{animal.statuts}
+              th.date #{animal.date}
+              th #{animal.creneau}
+              th
+                a(href='mailto:'+ animal.alerteur) #{animal.alerteur}
+              th.animal #{animal.animal}
+              th #{animal.couleur}
+              th #{animal.adresse}
+              th #{animal.etat}
+              th #{animal.collier}
+              th.brigade #{animal.brigade}
+              th
+                a.btn.btn-info(href='/edit/'+ animal._id) Edit/ajouter une brigade 
+              if animal.brigade
+                th
+                  a.btn.btn-danger(href='/result/'+ animal._id) Resultat intervention
+              else
+                th
+                  a.btn.btn-danger(href='#', disabled="disabled") Resultat intervention
+
+block footer
+  script(src='//listjs.com/assets/javascripts/list.min.js')
+  script(src='../public/js/dash.js')

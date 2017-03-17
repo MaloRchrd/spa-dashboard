@@ -1,0 +1,79 @@
+
+extends layout.pug
+
+
+
+
+block nav
+  nav.navbar.navbar-default
+    .container-fluid
+      .navbar-header
+        a.navbar-brand(href='/')
+          p S.P.A 🐱 🐶 🐰 🐦
+      a.btn.btn-danger.navbar-right.navbar-btn(href='/addanimal') Faire un Signalement
+
+
+block main
+  .col-md-6.col-md-offset-3.well
+    form.form-horizontal(action='/', method='post')
+      // Form Name
+      legend Signaler un animal
+      // Text input
+      .form-group
+        label.col-md-4.control-label(for='Address') Nouvelle position de l'animal
+        .col-md-4
+          input#Adress.form-control.input-md(name='Address', type='text', required='', placeholder='Ex : 62 rue Jean-Jacques Rousseau',autocomplete="off")
+          span.help-block Merci de rentrer l'adresse où vous avez vu l'animal.
+      // Select Basic
+      .form-group
+        label.col-md-4.control-label(for='Animal') Choisissez un créneau
+        .col-md-4#creneauxArea
+      // Select Basic
+      .form-group
+        label.col-md-4.control-label(for='Animal') Type d'animal
+        .col-md-4
+          select#Animal.form-control(name='Animal')
+            option(value='Chat') Chat
+            option(value='Chien') Chien
+            option(value='Perroquet') Perroquet
+            option(value='Lapin') Lapin
+      // Text input
+      .form-group
+        label.col-md-4.control-label(for='couleur') Couleur
+        .col-md-4
+          input#couleur.form-control.input-md(name='couleur', type='text', placeholder='Ex : bleu ')
+      // Select Basic
+      .form-group
+        label.col-md-4.control-label(for='etat') Quel est l'état de l'animal ?
+        .col-md-4
+          select#etat.form-control(name='etat')
+            option(value='Très faible') Très faible
+            option(value='Faible') Faible
+            option(value='Moyen') Moyen
+            option(value='Bon') Bon
+      // Multiple Radios (inline)
+      .form-group
+        label.col-md-4.control-label(for='collier') Avait t'il un collier ?
+        .col-md-4
+          label.radio-inline(for='collier-0')
+            input#collier-0(type='radio', name='collier', value='1', checked='checked')
+            |       oui
+          label.radio-inline(for='collier-1')
+            input#collier-1(type='radio', name='collier', value='0')
+            |       non
+      // Text input
+      .form-group
+        label.col-md-4.control-label(for='email') email
+        .col-md-4
+          input#email.form-control.input-md(name='email', type='email', placeholder='Ex : malo@hellozack.fr', required='', autocomplete="off")
+          span.help-block
+            | Merci de laisser votre email pour que nous vous tenions au courant de la prise en charge de l'animal.
+      // Button
+      .form-group
+        label.col-md-4.control-label(for='submit') Merci pour votre contribution
+        .col-md-4
+          button#submit.btn.btn-primary( type='submit', name='submit') Envoyer
+
+
+block footer
+  script(src='../public/js/creneauxPicker.js')

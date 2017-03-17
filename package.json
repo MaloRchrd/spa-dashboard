@@ -1,0 +1,26 @@
+{
+  "name": "spa-dashboard",
+  "version": "1.0.0",
+  "description": "HelloZack technical test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "spa",
+    "dashboard",
+    "node",
+    "express",
+    "mongo"
+  ],
+  "author": "Malo Richard",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "express-session": "^1.15.1",
+    "mongodb": "^2.2.24",
+    "nodemailer": "^3.1.7",
+    "pug": "^2.0.0-beta11"
+  }
+}
