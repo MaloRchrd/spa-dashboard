@@ -1,6 +1,6 @@
 # SPA-dashboard
 
-![spa-dashboard](../public/img/spa-dashboard.png)
+![spa-dashboard](/public/img/spa-dashboard.png)
 
 ## stack technic
   - Node
@@ -15,6 +15,7 @@
 
 - Clone repository on your desktop
 - if not installed,[add MongoDB](https://docs.mongodb.com/manual/installation/)
+- Start mongo
 - open to terminal :
 
 ```
