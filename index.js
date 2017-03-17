@@ -1,6 +1,5 @@
 const express = require('express');
 const mongo = require('mongodb');
-const session = require('express-session');
 const nodemailer = require('nodemailer');
 var bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
@@ -8,7 +7,7 @@ const db = require('./db');
 const pug = require('pug');
 var app = express();
 
-// mongo
+// Mongo
 var URL = 'mongodb://localhost:27017/spadashboard';
 var connectDB;
 
@@ -20,6 +19,7 @@ app.use(bodyParser.urlencoded({
 
 // static folder
 app.use("/public", express.static(__dirname + '/public'));
+
 
 // Init pug
 app.set('view engine', 'pug')
@@ -43,7 +43,7 @@ app.get('/',function (req,res) {
     });
   });
 
-// recive post data from /addanimal
+// recieve post from /addanimal
 app.post('/',function(req,res) {
     var date = new Date();
     date = date.toLocaleDateString()
@@ -62,13 +62,14 @@ app.post('/',function(req,res) {
    }, function(err, result) {
      if (err) {
        console.log(err);
-     } else {
+     }else {
 
        // define email
        let mailOptions = {
          from: '"SPA 🐱 🐶 🐰 🐦" <dashboard.spa@gmail.com>', // email sender
-         to: 'tim@hellozack.fr', // Admin email
+         to: 'malo.rchrd@gmail.com', // Admin email
          subject: 'Nouveau Signalement 🐱', // Subjet
+        //  text: 'Hello world ?', // plain text body
          html: '<b>Bonjour Admin</b> <br> <p>un nouveau '+req.body.Animal+' a été signalé. </p> <p>Il se trouve @ '+req.body.Address+'. </p>' // html body
        };
        // send mail to Admin
@@ -84,35 +85,26 @@ app.post('/',function(req,res) {
   });
 });
 
-
-
-// add "signalement"
+// add annimal
 app.get('/addanimal',function (req,res) {
   // console.log(req.body);
   res.render('form-spa');
 });
 
-//edit "signalement"
+//edit annimal
 app.get('/edit/:id',function (req,res) {
   var id = new mongo.ObjectID(req.params.id);
   console.log(id);
   db.get().collection('spadashboard').findOne({'_id' :id },function(error,data) {
     console.log(data);
 
-  res.render('edit', {animaux: data})
+  res.render('edit', {animaux: data}) // render  index using pug
   });
 });
 
-// brigade result
-app.get('/result/:id',function (req,res) {
-  var id = new mongo.ObjectID(req.params.id);
-  console.log(id);
-  db.get().collection('spadashboard').findOne({'_id' :id },function(error,data) {
-    // console.log(data);
-  res.render('result', {animaux: data})
-});
 
 
+// recieve post /edit and update mongo data
 app.post('/update/:id',function(req,res) {
     var id = new mongo.ObjectID(req.params.id);
     var date = new Date();
@@ -136,14 +128,26 @@ app.post('/update/:id',function(req,res) {
      }}, function(err, result) {
      if (err) {
        console.log(err);
+      //  res.redirect('/addanimal');
      }else {
        console.log(" update animal "+id+" in spadashboard collection.");
-       res.redirect('/');
+       res.redirect('/'); // render using pug
      }
   });
 });
 
+// result of brigade intervention
+app.get('/result/:id',function (req,res) {
+  var id = new mongo.ObjectID(req.params.id);
+  console.log(id);
+  db.get().collection('spadashboard').findOne({'_id' :id },function(error,data) {
+    console.log(data);
 
+  res.render('result', {animaux: data}) // render  index using pug
+  });
+});
+
+// recieve post /result and update statuts
 app.post('/finish/:id',function(req,res) {
     var id = new mongo.ObjectID(req.params.id);
 
@@ -162,6 +166,7 @@ app.post('/finish/:id',function(req,res) {
            from: '"SPA 🐱 🐶 🐰 🐦" <dashboard.spa@gmail.com>', // email sender
            to: data.alerteur, // Admin email
            subject: 'Votre signalement 🐱', // Subjet
+          //  text: 'Hello world ?', // plain text body
            html: '<b>Bonjour,</b> <br> <p>Votre signalement a été pris en charge. </p> <p>Le résultat de la brigade est : '+data.statuts+'. </p><p>Encore merci pour votre signalement.</p>' // html body
          };
          // send mail to alerteur
@@ -179,13 +184,12 @@ app.post('/finish/:id',function(req,res) {
 });
 
 
-// connect mongo and start serveur
+//connect Mongo and start serveur
 db.connect(URL, function(err, db) {
   if (err) {
     return;
-  }else {
-    var server = app.listen(8888,function(){
-      console.log('Mongo started and serveur running port 8888');
-    });
   }
+  var server = app.listen(8888,function(){
+    console.log('Mongo started and serveur running port 8888');
+  });
 });

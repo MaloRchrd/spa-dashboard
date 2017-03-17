@@ -10,6 +10,7 @@
 ## front-end
   - Bootstrap
   - List.js
+  - pug.js
 
 ## Instalation
 
