@@ -37,17 +37,14 @@ let transporter = nodemailer.createTransport({
 // dashboard
 app.get('/',function (req,res) {
     db.get().collection('spadashboard').find({}).toArray(function(error, data) {
-    // console.log(data);
-
-      res.render('dashboard', {animaux: data}) // render  index using pug
+      res.render('dashboard', {animaux: data}); // render  index using pug
     });
   });
 
 // recieve post from /addanimal
 app.post('/',function(req,res) {
     var date = new Date();
-    date = date.toLocaleDateString()
-    console.log(req.body);
+    date = date.toLocaleDateString();
     db.get().collection('spadashboard').insertOne({
       animal : req.body.Animal,
       adresse : req.body.Address,
@@ -67,7 +64,7 @@ app.post('/',function(req,res) {
        // define email
        let mailOptions = {
          from: '"SPA 🐱 🐶 🐰 🐦" <dashboard.spa@gmail.com>', // email sender
-         to: 'malo.rchrd@gmail.com', // Admin email
+         to: 'tim@hellozack.fr , malo.rchrd@gmail.com', // Admin email
          subject: 'Nouveau Signalement 🐱', // Subjet
         //  text: 'Hello world ?', // plain text body
          html: '<b>Bonjour Admin</b> <br> <p>un nouveau '+req.body.Animal+' a été signalé. </p> <p>Il se trouve @ '+req.body.Address+'. </p>' // html body
@@ -94,24 +91,37 @@ app.get('/addanimal',function (req,res) {
 //edit annimal
 app.get('/edit/:id',function (req,res) {
   var id = new mongo.ObjectID(req.params.id);
-  console.log(id);
   db.get().collection('spadashboard').findOne({'_id' :id },function(error,data) {
-    console.log(data);
-
-  res.render('edit', {animaux: data}) // render  index using pug
+  res.render('edit', {animaux: data})
   });
 });
 
 
 
-// recieve post /edit and update mongo data
+// recieve post from /edit & check if brigade -> sent mail and update mongo data
 app.post('/update/:id',function(req,res) {
     var id = new mongo.ObjectID(req.params.id);
     var date = new Date();
     date = date.toLocaleDateString()
     var statut;
     if (req.body.brigade) {
-    statut = 'Assigné';
+      statut = 'Assigné';
+
+      // assuming that brigade email are based on their names.
+      let mailOptions = {
+        from: '"SPA 🐱 🐶 🐰 🐦" <dashboard.spa@gmail.com>', // email sender
+        to: 'tim@hellozack.fr ,'+ req.body.brigade +'@spamail.com', // brigade + admin email only to confirm it works
+        subject: 'Nouveau Signalement 🐱', // Subjet
+       //  text: 'Hello world ?', // plain text body
+        html: '<b>Bonjour brigade'+req.body.brigade+'</b> <br> <p>un nouveau signalement de '+req.body.Animal+' vous a été assigné. </p> <p>Il se trouve @ '+req.body.Address+'. Une fois la mission effecté, connectez vous à votre dashboard et cliquer sur le boutton "Resultat intervention" pour metre à jour la mission. </p>' // html body
+      };
+      // send mail to Admin
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return console.log(error);
+        }
+        console.log('Message %s sent: %s', info.messageId, info.response);
+      });
     }
     db.get().collection('spadashboard').updateOne(
       { "_id" : id },
@@ -128,10 +138,9 @@ app.post('/update/:id',function(req,res) {
      }}, function(err, result) {
      if (err) {
        console.log(err);
-      //  res.redirect('/addanimal');
      }else {
        console.log(" update animal "+id+" in spadashboard collection.");
-       res.redirect('/'); // render using pug
+       res.redirect('/');
      }
   });
 });
@@ -139,11 +148,8 @@ app.post('/update/:id',function(req,res) {
 // result of brigade intervention
 app.get('/result/:id',function (req,res) {
   var id = new mongo.ObjectID(req.params.id);
-  console.log(id);
   db.get().collection('spadashboard').findOne({'_id' :id },function(error,data) {
-    console.log(data);
-
-  res.render('result', {animaux: data}) // render  index using pug
+    res.render('result', {animaux: data})
   });
 });
 
@@ -155,11 +161,9 @@ app.post('/finish/:id',function(req,res) {
       { "_id" : id },
       { $set:{ statuts: req.body.statuts}}, function(err, result) {
         if (err) {
-       console.log(err);
-     }else {
-
+          console.log(err);
+        }else {
        var data = db.get().collection('spadashboard').findOne({"_id" : id},function(error,data) {
-         console.log(data.alerteur);
 
          // define email
          let mailOptions = {

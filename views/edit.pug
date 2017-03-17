@@ -25,6 +25,8 @@ block main
           select#brigade.form-control(name='brigade')
             if animaux.brigade
               option(value=''+animaux.brigade) #{animaux.brigade}
+            else
+              option(value='')   
             option(value='75015-A') 75015-A
             option(value='75015-B') 75015-B
             option(value='75002') 75002
